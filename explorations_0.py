@@ -19,15 +19,15 @@ from collections import Counter
 
 # investigating size and structure of the following datasets
 # intuitively how should these sizes relate to each other?
-trainData = pd.read_csv('train.csv')
+trainData = pd.read_csv('data/train.csv')
 print trainData.head()
 print len(trainData)
 
-words = pd.read_csv('words.csv')
+words = pd.read_csv('data/words.csv')
 print words.head()
 print len(words)
 
-users = pd.read_csv('users.csv')
+users = pd.read_csv('data/users.csv')
 print users.head()
 print len(users)
 
@@ -41,4 +41,3 @@ print len(users)
 # user: we will also want demographic information about individual users
 # user: furthermore, will want to know their responses to each of the questions about music
 # time: how does this variable figure into things?
-
