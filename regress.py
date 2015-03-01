@@ -1,4 +1,3 @@
-
 import pandas as pd
 import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin
@@ -29,7 +28,7 @@ class MeanPredictor(BaseEstimator, RegressorMixin):
 #A simple model framework for splitting on features and
 #then classifying individually
 class ModelStump(BaseEstimator, RegressorMixin):
-    def __init__(self, model_constructor = MeanPredictor, splitInds = None):
+    def __init__(self, model_constructor = MeanPredictor, splitInds = None, verbose = False):
         self.predictors = {}
         self.splitInds = splitInds
 
@@ -40,6 +39,7 @@ class ModelStump(BaseEstimator, RegressorMixin):
         self.features = None
 
         self.model = model_constructor
+        self.verbose = verbose
         
     #This is assuming the input is a pandas Data Frame
     def fit_df(self, df, splitVars, target):
@@ -53,7 +53,7 @@ class ModelStump(BaseEstimator, RegressorMixin):
         #rather than a data frame. Thus we need to keep
         #track of the indicies of the splitting variables
         self.splitInds = [i for i, v in enumerate(self.features) if v in splitVars]             
-        
+        i = 0
         for key, subframe in df.groupby(splitVars):
             m = self.model()
 
@@ -61,6 +61,9 @@ class ModelStump(BaseEstimator, RegressorMixin):
             y = np.asarray(subframe[target])
             m.fit(X, y)
             self.predictors[key] = m
+            if self.verbose:
+                i += 1
+                print "model", i, "fitted"
         return self
             
     def fit(self, X, y):
