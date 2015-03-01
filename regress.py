@@ -1,11 +1,15 @@
 
 import pandas as pd
 import numpy as np
+from sklearn.base import BaseEstimator, RegressorMixin
 
+
+#This has not yet been fully tested for compatibility, see: 
+#http://scikit-learn.org/stable/developers/index.html#rolling-your-own-estimator
 
 #A simple regression model which always
 #predicts the mean of the target variable
-class MeanPredictor(object):
+class MeanPredictor(BaseEstimator, RegressorMixin):
     def __init__(self, mu = 0):
         self.mu = mu
         self.X = None
@@ -13,12 +17,13 @@ class MeanPredictor(object):
     def fit(self, X, y):
         self.mu = np.mean(y)
         self.X = X
+        return self
         
     def predict(self, X):
         return np.full(len(X), self.mu)
 
-    def score(self, X, y):
-        return np.mean((self.predict(X) - y)**2)
+#    def score(self, X, y):
+#        return np.mean((self.predict(X) - y)**2)
 
     def __repr__(self):
         return "MeanPredictor with mean = {}".format(self.mu)
@@ -26,7 +31,7 @@ class MeanPredictor(object):
 
 #A simple model framework for splitting on features and
 #then classifying individually
-class ModelStump(object):
+class ModelStump(BaseEstimator, RegressorMixin):
     def __init__(self, model_constructor = MeanPredictor, splitInds = None):
         self.predictors = {}
         self.splitInds = splitInds
@@ -86,14 +91,14 @@ class ModelStump(object):
             yhat[i] = self.predict_row(X[i])
         return yhat
 
-    def score_df(self, df, target):
-        y = df[target]
-        yhat = self.predict_df(df)
-        return np.mean((y - yhat)**2)
+#    def score_df(self, df, target):
+#        y = df[target]
+#        yhat = self.predict_df(df)
+#        return np.mean((y - yhat)**2)
         
-    def score(self, X, y):
-        yhat = predict(X)
-        return np.mean((y - yhat)**2)
+#    def score(self, X, y):
+#        yhat = predict(X)
+#        return np.mean((y - yhat)**2)
                 
 #    def predict(self, X):
 #        if len(X) > 0:

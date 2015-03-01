@@ -8,7 +8,7 @@ import pandas as pd
 from regress import ModelStump, MeanPredictor
 import numpy as np
 
-
+ 
 #This is a test of splitting, not including
 #Any information about the user 
 def test1():
@@ -27,12 +27,12 @@ def test1():
         m3.fit_df(d_train, ["Artist", "Track"], 'Rating')
 
         print "fold", (i + 1)
-        ss_tot = m1.score(X[test], y[test])
-        ss_res2 = m2.score_df(d_test, 'Rating')
-        ss_res3 = m3.score_df(d_test, 'Rating')
-        print "By Artist", 1 - (ss_res2/ss_tot)
-        print "By Song", 1 - (ss_res3/ss_tot)
-
+        R21 = m1.score(X[test], y[test])
+        R22 = m2.score(X[test], y[test])
+        R23 = m3.score(X[test], y[test])
+        print "By Artist", R22
+        print "By Song", R23
+        
 #see http://scikit-learn.org/stable/auto_examples/imputation.html#example-imputation-py
 #for dealing with missing values
         
@@ -44,7 +44,6 @@ def test3()
     y = data.Rating
 
 
-<<<<<<< HEAD
 
 def test2():
     train = pd.read_csv("data/train.csv")
@@ -60,7 +59,7 @@ def test2():
         m.fit_df(d_train, ['Artist', 'Track'], 'Rating')
         ss_res = m.score_df(d_test, 'Rating')
         print ss_res
-=======
+
 if __name__ == "__main__":
     test1()
->>>>>>> 3bfeae009219dffe8a72eb4aa04a104602df080d
+
