@@ -16,12 +16,16 @@ def test1():
     for i, (train, test) in enumerate(KFold(len(data), 5)):
         d_train = data.iloc[train]
         d_test = data.iloc[test]
+
         X = np.asarray(data)
         y = data['Rating']
+
         m1, m2, m3 = MeanPredictor(),  ModelStump(),  ModelStump()
+
         m1.fit(X[train], y[train])
         m2.fit_df(d_train, ["Artist"], 'Rating')
         m3.fit_df(d_train, ["Artist", "Track"], 'Rating')
+
         print "fold", (i + 1)
         ss_tot = m1.score(X[test], y[test])
         ss_res2 = m2.score_df(d_test, 'Rating')
@@ -40,6 +44,7 @@ def test3()
     y = data.Rating
 
 
+<<<<<<< HEAD
 
 def test2():
     train = pd.read_csv("data/train.csv")
@@ -55,3 +60,7 @@ def test2():
         m.fit_df(d_train, ['Artist', 'Track'], 'Rating')
         ss_res = m.score_df(d_test, 'Rating')
         print ss_res
+=======
+if __name__ == "__main__":
+    test1()
+>>>>>>> 3bfeae009219dffe8a72eb4aa04a104602df080d
