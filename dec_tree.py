@@ -6,8 +6,11 @@ import matplotlib.pyplot as plt
 
 from sklearn import tree
 from sklearn import linear_model
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
 
 
 # reading in data from testing as well as users csv
@@ -52,8 +55,28 @@ plt.show()
 '''
 
 
+sampData = pd.DataFrame({'init': [0]*len(sampleData)})
 
-for index, row in sampleData.iterrows():
+for i in sampleData.columns:
+    if sampleData[i].dtype.name == 'object':
+        if i == 'LIST_OWN':
+            newData = pd.get_dummies(sampleData[i], prefix='own')
+        elif i == 'LIST_BACK':
+            newData = pd.get_dummies(sampleData[i], prefix='back')
+        else:
+            newData = pd.get_dummies(sampleData[i])
+        sampData = sampData.join(newData)
+    else:
+        sampData = sampData.join(sampleData[i])
+
+sampData = sampData.drop('init', axis=1)
+sampData.fillna(0, inplace=True)
+# print sampData.shape
+# print sampData.head()
+
+
+
+for index, row in sampData.iterrows():
     artist = row['Artist']
     track = row['Track']
 
@@ -61,8 +84,33 @@ for index, row in sampleData.iterrows():
     target = trainingData['Rating']
 
     trainingData = trainingData.drop('Rating', axis=1)
+    trainingData = trainingData.reset_index()
 
-    # print trainingData.dtypes
+    # print trainingData.dtypes, '\n'
+    # print trainingData.shape
+
+    print trainingData.shape
+    print trainingData.head(), '\n'
+
+    data_ = pd.DataFrame({'init': [0]*len(trainingData)})
+
+    for i in trainingData.columns:
+        if trainingData[i].dtype.name == 'object':
+            if i == 'LIST_OWN':
+                newData = pd.get_dummies(trainingData[i], prefix='own')
+            elif i == 'LIST_BACK':
+                newData = pd.get_dummies(trainingData[i], prefix='back')
+            else:
+                newData = pd.get_dummies(trainingData[i])
+            data_ = data_.join(newData)
+        else:
+            data_ = data_.join(trainingData[i])
+
+    data_ = data_.drop('init', axis=1)
+    data_.fillna(0, inplace=True)
+    print data_.shape
+    print data_.head()
+
     # print set(trainingData['Unnamed: 0'])
     # print set(trainingData['RESPID'])
     # print set(trainingData['AGE'])
@@ -86,10 +134,18 @@ for index, row in sampleData.iterrows():
     # print set(trainingData['Q18'])
     # print set(trainingData['Q19'])
 
-    # clf = tree.DecisionTreeRegressor()
-    # clf.fit(trainingData, target)
-    # print clf.predict(row)
+    clf = tree.DecisionTreeRegressor()
+    clf.fit(data_, target)
+    print clf.predict(row)
 
     # regr = linear_model.LinearRegression()
-    # regr.fit(trainingData, target)
+    # regr.fit(data_, target)
     # print regr.predict(row)
+
+    # clf = RandomForestRegressor(n_estimators=10)
+    # clf = clf.fit(trainingData, target)
+    # print clf.predict(row)
+
+    # clf = RandomForestClassifier()
+    # clf = clf.fit(trainingData, target)
+    # print clf.predict(row)
