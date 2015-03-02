@@ -230,7 +230,12 @@ male$GENDER = 1
 female$GENDER = 0
 users <- rbind(male, female)
 
+dum <- acm.disjonctif(users[c('WORKING', 'REGION', 'MUSIC')])
+nodum <- select(users, -c(4:6))
+users <- cbind(nodum, dum)
 write.csv(users, 'users_int.csv')
+
+pca <- PCA(users[2:51])
 
 # Creating some dummy variables
 users <- data.frame(users)
