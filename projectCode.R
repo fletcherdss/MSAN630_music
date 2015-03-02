@@ -7,6 +7,8 @@ library(stringr)
 library(caret)
 library(ggplot2)
 library(ade4)
+library(stats)
+library(FactoMineR)
 
 # Look at PCA in users dataset 
 
@@ -225,4 +227,20 @@ dummy <- acm.disjonctif(users[c('GENDER', 'WORKING', 'REGION', 'MUSIC', 'LIST_OW
 nodummy <- select(users, -c(2, 4:8))
 new_users <- cbind(nodummy, dummy)
 
-write.csv(users, 'users_pretty_dummy.csv')
+write.csv(new_users, 'users_pretty_dummy.csv')
+
+users <- fread('users_pretty_dummy.csv')
+users <- data.frame(select(users, -1))
+
+users.pca <- PCA(users)
+summary(users.pca)
+users.pca1_20 <- PCA(users[1:20])
+summary(users.pca1_20)
+users.pca21_40 <- PCA(users[21:40])
+summary(users.pca21_40)
+users.pca41_60 <- PCA(users[41:60])
+summary(users.pca41_60)
+users.pca61_80 <- PCA(users[61:80])
+summary(users.pca61_80)
+users.pca81_88 <- PCA(users[81:87])
+summary(users.pca81_87)
