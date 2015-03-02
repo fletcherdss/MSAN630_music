@@ -236,6 +236,93 @@ users <- cbind(nodum, dum)
 write.csv(users, 'users_int.csv')
 
 pca <- PCA(users[2:51])
+summary(pca)
+"Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6   Dim.7   Dim.8   Dim.9  Dim.10  Dim.11
+Variance               8.254   2.338   1.972   1.730   1.602   1.490   1.451   1.347   1.306   1.187   1.149
+% of var.             16.507   4.676   3.945   3.460   3.204   2.979   2.903   2.694   2.613   2.375   2.298
+Cumulative % of var.  16.507  21.183  25.128  28.587  31.791  34.770  37.673  40.367  42.980  45.355  47.652
+Dim.12  Dim.13  Dim.14  Dim.15  Dim.16  Dim.17  Dim.18  Dim.19  Dim.20  Dim.21  Dim.22
+Variance               1.138   1.082   1.076   1.051   1.044   1.039   1.030   1.026   1.020   1.013   1.008
+% of var.              2.275   2.163   2.153   2.102   2.087   2.078   2.061   2.051   2.040   2.026   2.016
+Cumulative % of var.  49.928  52.091  54.243  56.345  58.433  60.511  62.572  64.623  66.663  68.689  70.705
+Dim.23  Dim.24  Dim.25  Dim.26  Dim.27  Dim.28  Dim.29  Dim.30  Dim.31  Dim.32  Dim.33
+Variance               1.005   1.004   1.000   0.985   0.960   0.858   0.824   0.773   0.706   0.662   0.656
+% of var.              2.011   2.008   2.000   1.970   1.921   1.716   1.647   1.546   1.412   1.323   1.313
+Cumulative % of var.  72.715  74.723  76.724  78.694  80.614  82.331  83.978  85.523  86.935  88.258  89.571
+Dim.34  Dim.35  Dim.36  Dim.37  Dim.38  Dim.39  Dim.40  Dim.41  Dim.42  Dim.43  Dim.44
+Variance               0.614   0.567   0.531   0.501   0.477   0.393   0.369   0.333   0.322   0.269   0.248
+% of var.              1.227   1.135   1.062   1.002   0.953   0.786   0.738   0.665   0.644   0.537   0.496
+Cumulative % of var.  90.798  91.933  92.995  93.997  94.950  95.736  96.474  97.139  97.783  98.320  98.817
+Dim.45  Dim.46  Dim.47  Dim.48  Dim.49  Dim.50
+Variance               0.212   0.206   0.174   0.000   0.000   0.000
+% of var.              0.423   0.413   0.347   0.000   0.000   0.000
+Cumulative % of var.  99.240  99.653 100.000 100.000 100.000 100.000"
+
+pcaWORKING <- PCA(users[25:38])
+summary(pcaWORKING)
+"Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6   Dim.7   Dim.8   Dim.9  Dim.10  Dim.11
+Variance               1.379   1.214   1.106   1.081   1.063   1.048   1.041   1.032   1.011   1.008   1.007
+% of var.              9.851   8.675   7.898   7.724   7.594   7.485   7.434   7.370   7.218   7.200   7.195
+Cumulative % of var.   9.851  18.526  26.424  34.148  41.742  49.227  56.661  64.031  71.249  78.449  85.644
+                      Dim.12  Dim.13  Dim.14
+Variance               1.005   1.005   0.000
+% of var.              7.180   7.176   0.000
+Cumulative % of var.  92.824 100.000 100.000"
+
+pcaREGION <- PCA(users[39:45])
+summary(pcaREGION)
+"Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6   Dim.7
+Variance               1.492   1.367   1.090   1.030   1.018   1.003   0.000
+% of var.             21.319  19.532  15.566  14.708  14.541  14.334   0.000
+Cumulative % of var.  21.319  40.852  56.417  71.125  85.666 100.000 100.000"
+
+pcaMUSIC <- PCA(users[46:51])
+summary(pcaMUSIC)
+"Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6
+Variance               1.487   1.364   1.084   1.041   1.025   0.000
+% of var.             24.777  22.734  18.069  17.342  17.077   0.000
+Cumulative % of var.  24.777  47.511  65.580  82.923 100.000 100.000"
+
+pcaOther1 <- PCA(users[2:24])
+summary(pcaOther1)
+"Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6   Dim.7   Dim.8   Dim.9  Dim.10  Dim.11
+Variance               7.582   2.177   1.572   1.244   1.156   1.001   0.902   0.849   0.762   0.701   0.662
+% of var.             32.965   9.467   6.836   5.411   5.028   4.352   3.924   3.690   3.312   3.049   2.879
+Cumulative % of var.  32.965  42.432  49.268  54.679  59.706  64.058  67.982  71.672  74.984  78.033  80.912
+                      Dim.12  Dim.13  Dim.14  Dim.15  Dim.16  Dim.17  Dim.18  Dim.19  Dim.20  Dim.21  Dim.22
+Variance               0.613   0.570   0.532   0.484   0.393   0.356   0.326   0.270   0.250   0.213   0.209
+% of var.              2.665   2.478   2.312   2.106   1.711   1.550   1.415   1.174   1.085   0.927   0.908
+Cumulative % of var.  83.578  86.056  88.368  90.474  92.185  93.735  95.150  96.325  97.410  98.336  99.244
+                      Dim.23
+Variance               0.174
+% of var.              0.756
+Cumulative % of var. 100.000"
+
+pcaQs <- PCA(users[6:24])
+summary(pcaQs)
+"Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4   Dim.5   Dim.6   Dim.7   Dim.8   Dim.9  Dim.10  Dim.11
+Variance               7.234   2.144   1.456   1.177   0.884   0.807   0.745   0.689   0.600   0.564   0.492
+% of var.             38.075  11.284   7.662   6.197   4.653   4.247   3.922   3.624   3.156   2.966   2.589
+Cumulative % of var.  38.075  49.359  57.022  63.218  67.872  72.119  76.041  79.666  82.821  85.788  88.377
+                      Dim.12  Dim.13  Dim.14  Dim.15  Dim.16  Dim.17  Dim.18  Dim.19
+Variance               0.397   0.361   0.326   0.274   0.252   0.216   0.210   0.174
+% of var.              2.089   1.898   1.718   1.440   1.325   1.136   1.103   0.915
+Cumulative % of var.  90.466  92.363  94.081  95.521  96.846  97.982  99.085 100.000"
+
+pcaOther2 <- PCA(users[2:5])
+summary(pcaOther2)
+"Eigenvalues
+                       Dim.1   Dim.2   Dim.3   Dim.4
+Variance               1.319   1.018   0.996   0.668
+% of var.             32.964  25.439  24.895  16.702
+Cumulative % of var.  32.964  58.403  83.298 100.000"
+
 
 # Creating some dummy variables
 users <- data.frame(users)
