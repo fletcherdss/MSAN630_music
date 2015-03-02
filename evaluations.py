@@ -13,9 +13,6 @@ from regress import ModelStump, MeanPredictor
 import numpy as np
 
 
-train = pd.read_csv("data/train.csv")
-songs = list(set(map(tuple, list(np.asarray(train[['Artist', 'Track']])))))
-artists, tracks = zip(*songs)
 
  
 #This is a test of splitting, not including
@@ -150,4 +147,8 @@ def test3(comp):
         print "Ridge", R25
     
 if __name__ == "__main__":
+    train = pd.read_csv("data/train.csv")
+    songs = list(set(map(tuple, list(np.asarray(train[['Artist', 'Track']])))))
+    artists, tracks = zip(*songs)
+
     test1()

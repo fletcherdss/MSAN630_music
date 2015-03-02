@@ -83,7 +83,6 @@ class ModelStump(BaseEstimator, RegressorMixin):
             self.predictors[key] = m
             if self.verbose:
                 print "model", i, "fitted"
-            if self.partial is not none:
         return self
             
     def fit(self, X, y):
