@@ -25,10 +25,30 @@ class MeanPredictor(BaseEstimator, RegressorMixin):
         return "MeanPredictor with mean = {}".format(self.mu)
 
 
-#A simple model framework for splitting on features and
-#then classifying individually
 class ModelStump(BaseEstimator, RegressorMixin):
-    def __init__(self, model_constructor = MeanPredictor, splitInds = None, verbose = False):
+    '''
+    Splitting Model: Like a decision stump with an additional model at the leaves
+    
+    A simple model framework for splitting on features and
+    then regressing individually
+    
+    Parameters
+    ----------
+    model_constructor : Sklearn Regressor, default = MeanPredictor 
+
+    splitInds : The column indicies of the categorical variables being split on.
+       A split on classes C_1 ... C_n with produce |C_1 x C_2 x ... x C_n| splits
+
+    verbose : default = False
+
+    partial_keys : [(C_1, C_2, ..., C_n)], default = None
+       If the split classes are known it is possible to give
+       a partial list. For testing models without training on the full data set
+
+    
+    '''
+    def __init__(self, model_constructor = MeanPredictor,
+                  splitInds = None, verbose = False, partial_keys = None):
         self.predictors = {}
         self.splitInds = splitInds
 
@@ -40,6 +60,7 @@ class ModelStump(BaseEstimator, RegressorMixin):
 
         self.model = model_constructor
         self.verbose = verbose
+
         
     #This is assuming the input is a pandas Data Frame
     def fit_df(self, df, splitVars, target):
@@ -53,8 +74,7 @@ class ModelStump(BaseEstimator, RegressorMixin):
         #rather than a data frame. Thus we need to keep
         #track of the indicies of the splitting variables
         self.splitInds = [i for i, v in enumerate(self.features) if v in splitVars]             
-        i = 0
-        for key, subframe in df.groupby(splitVars):
+        for i, (key, subframe) in enumerate(df.groupby(splitVars)):
             m = self.model()
 
             X = np.asarray(subframe[self.features])
@@ -62,8 +82,8 @@ class ModelStump(BaseEstimator, RegressorMixin):
             m.fit(X, y)
             self.predictors[key] = m
             if self.verbose:
-                i += 1
                 print "model", i, "fitted"
+            if self.partial is not none:
         return self
             
     def fit(self, X, y):
