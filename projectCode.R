@@ -220,6 +220,15 @@ lbUp <- filter(users, LIST_BACK %in% sixteenPlus)
 lbUp <- mutate(lbUp, LIST_BACK = 16)
 users <- rbind(lbno, lb00, lb01, lb02, lb03, lb04, lb05, lb06, lb07, lb08, lb09, lb10, lb11, lb12, lb13,
                lb14, lb15, lb16, lbUp)
+users$LIST_OWN <- as.integer(users$LIST_OWN)
+users$LIST_BACK <- as.integer(users$LIST_BACK)
+
+# GENDER as dummy variable
+male <- filter(users, GENDER == 'Male')
+female <- filter(users, GENDER == 'Female')
+male$GENDER = 1
+female$GENDER = 0
+users <- rbind(male, female)
 
 write.csv(users, 'users_int.csv')
 
