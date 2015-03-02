@@ -235,6 +235,9 @@ nodum <- select(users, -c(4:6))
 users <- cbind(nodum, dum)
 write.csv(users, 'users_int.csv')
 
+users <- fread('users_int.csv')
+users <- data.frame(users)
+
 pca <- PCA(users[2:51])
 summary(pca)
 "Eigenvalues
