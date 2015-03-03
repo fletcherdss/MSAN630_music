@@ -480,3 +480,9 @@ write.csv(joined, 'data/joined_train.csv')
 
 joinedTest <- sqldf("SELECT * FROM test JOIN users USING(User)")
 write.csv(joinedTest, 'data/joined_test.csv')
+
+# FULL LEFT JOIN
+fullJoin <- sqldf("SELECT * FROM users LEFT JOIN train ON train.User = users.RESPID")
+write.csv(fullJoin, 'joined_train_ALL.csv')
+
+fullJoinTest <- sqldf("SELECT * FROM users LEFT JOIN test ON test.User = users.RESPID")
