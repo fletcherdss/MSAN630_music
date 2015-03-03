@@ -112,29 +112,6 @@ def test2():
         print "Ridge:", R25
         print "Linear Regression:", R26, '\n'
 
-    # est = Pipeline([("imputer", Imputer()),
-    #                ("tree", DecisionTreeRegressor())])
-    # est = ModelStump(DecisionTreeRegressor, [0, 1])
-    # m3 = ModelStump(lambda : KNeighborsRegressor(30), [0, 1])
-
-    # est.fit(X2,y)
-    # score = cross_val_score(est, X2, y)
-    # print est.score(X2,y)
-
-
-
-'''
-fold 1
-By Song 0.111730359127
-KN 30 0.101317365993
-By Song With KN 30 0.169659520821
-fold 2
-By Song 0.112438671933
-KN 30 0.104437907591
-By Song With KN 30 0.168853491498
-fold 3
-'''
-
 
 if __name__ == "__main__":
     # test1()
