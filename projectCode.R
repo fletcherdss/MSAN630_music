@@ -353,6 +353,93 @@ summary(users.pcaREGION)
 users.pcaWORKING <- PCA(users[24:37])
 summary(users.pcaWORKING)
 
+
+# Using full joined data, getting rid of NAs
+users <- data.frame(select(fread('data/joined_train.csv'), -1))
+# Getting rid of AGE NA's
+age <- data.frame(table(users$AGE))
+ageNA <- filter(users, AGE %nin% age$Var1)
+ageNoNA <- filter(users, AGE %in% age$Var1)
+meanAge <- mean(ageNoNA$AGE)
+ageNA <- mutate(ageNA, AGE = meanAge)
+users <- rbind(ageNA, ageNoNA)
+# Getting rid of LIST_OWN NA's
+listown <- data.frame(table(users$LIST_OWN))
+ownNA <- filter(users, LIST_OWN %nin% listown$Var1)
+ownNoNA <- filter(users, LIST_OWN %in% listown$Var1)
+meanOwn <- mean(ownNoNA$LIST_OWN)
+ownNA <- mutate(ownNA, LIST_OWN = meanOwn)
+users <- rbind(ownNA, ownNoNA)
+# Getting rid of LIST_BACK NA's
+back <- data.frame(table(users$LIST_BACK))
+backNA <- filter(users, LIST_BACK %nin% back$Var1)
+backNoNA <- filter(users, LIST_BACK %in% back$Var1)
+meanBack <- mean(backNoNA$LIST_BACK)
+backNA <- mutate(backNA, LIST_BACK = meanBack)
+users <- rbind(backNA, backNoNA)
+# Getting rid of Q16 NA'a
+q16 <- data.frame(table(users$Q16))
+q16NA <- filter(users, Q16 %nin% q16$Var1)
+q16NoNA <- filter(users, Q16 %in% q16$Var1)
+meanQ16 <- mean(q16NoNA$Q16)
+q16NA <- mutate(q16NA, Q16 = meanQ16)
+users <- rbind(q16NA, q16NoNA)
+# Getting rid of Q18 NA'a
+q18 <- data.frame(table(users$Q18))
+q18NA <- filter(users, Q18 %nin% q18$Var1)
+q18NoNA <- filter(users, Q18 %in% q18$Var1)
+meanQ18 <- mean(q18NoNA$Q18)
+q18NA <- mutate(q18NA, Q18 = meanQ18)
+users <- rbind(q18NA, q18NoNA)
+# Getting rid of Q19 NA'a
+q19 <- data.frame(table(users$Q19))
+q19NA <- filter(users, Q19 %nin% q19$Var1)
+q19NoNA <- filter(users, Q19 %in% q19$Var1)
+meanQ19 <- mean(q19NoNA$Q19)
+q19NA <- mutate(q19NA, Q19 = meanQ19)
+users <- rbind(q19NA, q19NoNA)
+
+write.csv(users, 'joined_train_noNA.csv')
+
+
+# stats package PCA stuff
+users_all <- data.frame(select(users, c(5:55)))
+users.pca <- prcomp(users_all, center = TRUE, scale. = TRUE)
+plot(users.pca, type = 'lines')
+pca.df <- data.frame(users.pca[2])
+write.csv(pca.df, 'data/all_variables_pca.csv')
+
+users_misc <- data.frame(select(users, c(5:9)))
+misc.pca <- prcomp(users_misc, center = TRUE, scale. = TRUE)
+plot(misc.pca, type = 'lines')
+misc.df <- data.frame(misc.pca[2])
+write.csv(misc.df, 'data/misc_pca.csv')
+
+qs <- data.frame(select(users, c(10:28)))
+qs.pca <- prcomp(qs, center = TRUE, scale. = TRUE)
+plot(qs.pca, type = 'lines')
+qs.df <- data.frame(qs.pca[2])
+write.csv(qs.df, 'data/questions_pca.csv')
+
+work <- data.frame(select(users, c(29:42)))
+work.pca <- prcomp(work, center = TRUE, scale. = TRUE)
+plot(work.pca, type = 'lines')
+work.df <- data.frame(work.pca[2])
+write.csv(work.df, 'data/working_pca.csv')
+
+region <- data.frame(select(users, c(43:49)))
+reg.pca <- prcomp(region, center = TRUE, scale. = TRUE)
+plot(reg.pca, type = 'lines')
+reg.df <- data.frame(reg.pca[2])
+write.csv(reg.df, 'data/region_pca.csv')
+
+music <- data.frame(select(users, c(50:55)))
+music.pca <- prcomp(music, center = TRUE, scale. = TRUE)
+plot(music.pca, type = 'lines')
+music.df <- data.frame(music.pca[2])
+write.csv(music.df, 'data/music_pca.csv')
+
+
 # Histograms
 ggplot() + geom_histogram(data = users, aes(x = AGE))
 ggplot() + geom_histogram(data = users, aes(x = LIST_OWN))
