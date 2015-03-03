@@ -23,16 +23,16 @@ us_train <- filter(train, User %nin% users$RESPID)
 us_test <- filter(test, User %nin% users$RESPID)
 
 # Number of unique users not in train/test not in users.csv
-length(unique(us_train$User))
-length(unique(us_test$User))
+length(unique(us_train$User)) "2278"
+length(unique(us_test$User)) "2227"
 
 # Percent of users in train/test not in users.csv
-nrow(us_train)/nrow(train)
-nrow(us_test)/nrow(test)
+nrow(us_train)/nrow(train) "0.06283952"
+nrow(us_test)/nrow(test) "0.06253875"
 
 # Percent of unique users in train/test not in users.csv
-length(unique(us_train$User))/length(unique(train$User))
-length(unique(us_test$User))/length(unique(test$User))
+length(unique(us_train$User))/length(unique(train$User)) "0.04603973"
+length(unique(us_test$User))/length(unique(test$User)) "0.04831641"
 
 # Frequencies of feature levels:
 gender <- data.frame(table(users$GENDER))
