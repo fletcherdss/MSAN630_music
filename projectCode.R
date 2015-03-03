@@ -12,7 +12,7 @@ library(FactoMineR)
 
 # Look at PCA in users dataset 
 
-setwd('/Users/Aluminum/Documents/Machine Learning/Project')
+setwd('/Users/Aluminum/Documents/Machine Learning/MSAN630_music')
 train <- read.csv('train.csv')
 users <- fread('users.csv')
 words <- read.csv('words.csv')
@@ -376,3 +376,20 @@ ggplot() + geom_histogram(data = users, aes(x = Q16))
 ggplot() + geom_histogram(data = users, aes(x = Q17))
 ggplot() + geom_histogram(data = users, aes(x = Q18))
 ggplot() + geom_histogram(data = users, aes(x = Q19))
+
+# Joining data
+library(sqldf)
+users <- fread('data/users_int.csv')
+users <- select(users, -1)
+users <- data.frame(users)
+names(users)[1] = 'User'
+train <- fread('data/train.csv')
+train <- data.frame(train)
+test <- fread('data/test.csv')
+test <- data.frame(test)
+
+joined <- sqldf("SELECT * FROM train JOIN users USING(User)")
+write.csv(joined, 'data/joined_train.csv')
+
+joinedTest <- sqldf("SELECT * FROM test JOIN users USING(User)")
+write.csv(joinedTest, 'data/joined_test.csv')
