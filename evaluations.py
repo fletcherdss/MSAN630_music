@@ -145,10 +145,68 @@ def test3(comp):
         print "By Song With KN 30", R23
         print "By Song With Ridge", R24
         print "Ridge", R25
+
+def test4(comp):
+    train = pd.read_csv("data/train.csv")
+    users = pd.read_csv("data/users.csv")
+    gr = train .groupby('User', as_index = False)
+    data = pd.merge(train, (gr.aggregate(np.mean)), 'left', left_on = 'User', right_on = 'User')
+    data = data[['Artist_x', 'Track_x', 'User', 'Rating_x', "Time_x", 'Rating_y']]
+    data.columns = ['Artist', 'Track', 'User', 'Rating', 'Time', 'User_Average']
+    data['Relative_Rating'] = data['Rating'] - data['User_Average']
+    data2 = pd.merge(data, users, 'left', left_on = 'User', right_on = 'RESPID')
+    print data2
+    Xs = np.asarray(data2[["Artist", "Track"]])
+    Xr =  np.asarray(data2[["Q" + str(i) for i in range(1,20)]])
+    y = np.asarray(data2["Relative_Rating"])
+    y2 = np.asarray(data2["Rating"])
+    ya = np.asarray(data2["User_Average"])
+    imp = Imputer()
+    Xi = imp.fit_transform(Xr)
+    pca = PCA(n_components = comp)
+    Xp = pca.fit_transform(Xi)
+    X = np.concatenate((Xs, Xp), axis = 1)
+    print "data transformed"
+
+    print "data transformed"
+    for i, (train, test) in enumerate(KFold(len(X), 5)):
+        m1 = ModelStump(MeanPredictor, [0, 1])
+        m2 = ModelStump(lambda : DecisionTreeRegressor(max_depth = 5), [0, 1])
+        m3 = ModelStump(lambda : KNeighborsRegressor(30), [0, 1])
+        m4 = ModelStump(lambda : Ridge(), [0, 1], verbose = False)
+        m5 = Ridge()
+
+        m1.fit(X[train], y[train])
+        m2.fit(X[train], y[train])
+        m3.fit(X[train], y[train])
+        m4.fit(X[train], y[train])
+        m5.fit(X[train], y[train])
+        print "fold", (i + 1)
+        R21 = m1.score(X[test], y[test])
+        R22 = m2.score(X[test], y[test])
+        R23 = m3.score(X[test], y[test])
+        R24 = m4.score(X[test], y[test])
+        R25 = m5.score(X[test], y[test])
+
+        yhat = m4.predict(X[test]) + ya[test]
+        print len(yhat), len(y2), len(ya)
+        print (np.mean((yhat - y2[test])**2))**0.5
+        print 1 - (np.mean((yhat - y2[test])**2))/np.mean((y2[test] - np.mean(y2[test]))**2)
+
+
+
+        print "By Song", R21
+        print "By Song Decision Tree", R22
+        print "By Song With KN 30", R23
+        print "By Song With Ridge", R24
+        print "Ridge", R25
+    
+
+
     
 if __name__ == "__main__":
     train = pd.read_csv("data/train.csv")
     songs = list(set(map(tuple, list(np.asarray(train[['Artist', 'Track']])))))
     artists, tracks = zip(*songs)
 
-    test1()
+    test4(5)
