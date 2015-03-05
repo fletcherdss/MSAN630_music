@@ -3,8 +3,12 @@ import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin
 
 
+
 #This has not yet been fully tested for compatibility, see: 
 #http://scikit-learn.org/stable/developers/index.html#rolling-your-own-estimator
+#Specifically this will fail on any function which requires cloning 
+#IE crossvalidation 
+
 
 #A simple regression model which always
 #predicts the mean of the target variable
@@ -111,6 +115,61 @@ class ModelStump(BaseEstimator, RegressorMixin):
         for i in range(len(X)):
             yhat[i] = self.predict_row(X[i])
         return yhat
+
+class TargetAdjuster(BaseEstimator, RegressorMixin):
+    def __init__(self, model_constructor = MeanPredictor, 
+                 groupIndex = None, groupFeature = None):
+        self.baseModel = model_constructor
+        self.groupIndex = groupIndex
+        self.groupFeature = groupFeature
+        self.predictor = None
+        self.means = None
+        self.global_mean = None
+
+    def fit_df(self, df, target_name):
+        gr = df[[self.groupFeature, target_name]].groupby(self.groupFeature, as_index = False)
+        grag = gr.aggregate(np.mean)
+        data = pd.merge(df, grag, 'left', left_on = self.groupFeature,
+                        right_on = self.groupFeature, suffixes = ('', '_mean'))
+        data[target_name + '_relative'] = data[target_name] - data[target_name + '_mean']
+        relevant_vars = lambda c: (c not in [self.groupFeature, target_name,
+                                             target_name + 'mean', target_name + '_relative'])
+        X = data[filter(relevant_vars, data.columns)]  
+        y = data[target_name + '_relative']
+        m = self.baseModel()
+        m.fit(X, y)
+        self.predictor = m
+        self.means = dict((a,b) for _, a, b in grag.itertuples())
+        self.global_mean = np.mean(y)
+        return self
+
+    def fit(self, X, y):
+        if self.groupIndex is None:
+            print "warning: groupVariable not specified, defaulting to first column"
+            self.groupIndex = 0
+        self.groupFeature = self.groupIndex
+        d = pd.DataFrame(X)
+        d['y'] = y
+        self.fit_df(d, 'y')
+        return self
+
+    def predict(self, X):
+        Xt = X.T
+        group = Xt[self.groupIndex]
+        X2 = np.delete(Xt, self.groupIndex, 0).T 
+        y_rel = self.predictor.predict(X2)
+        y_means = np.array([self.means[u] if u in self.means else self.global_mean for u in group ])
+        return y_rel + y_means
+        
+def test1():
+    t = TargetAdjuster(groupIndex = 2)
+    data = pd.read_csv("data/train.csv")
+    #t.fit_df(data, 'Rating')
+    X = np.array(data[['Artist', 'Track', 'User']])
+    y = np.array(data['Rating'])
+    t.fit(X, y)
+
+    return t.score(X, y)
 
     
 if __name__ == "__main__":

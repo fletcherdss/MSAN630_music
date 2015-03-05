@@ -9,7 +9,7 @@ from sklearn.svm import SVR, NuSVR
 from sklearn.linear_model import Ridge
 from sklearn.decomposition import PCA
 import pandas as pd
-from regress import ModelStump, MeanPredictor
+from regress import ModelStump, MeanPredictor, TargetAdjuster
 import numpy as np
 
 
@@ -19,27 +19,35 @@ import numpy as np
 #Any information about the user 
 def test1():
     data = pd.read_csv("data/train.csv")
-    for i, (train, test) in enumerate(KFold(len(data), 5)):
+    for i, (train, test) in enumerate(KFold(len(data), 10)):
         d_train = data.iloc[train]
         d_test = data.iloc[test]
 
-        X = np.asarray(data)
+        X = np.asarray(data[['Artist', 'Track', 'User']])
         y = np.asarray(data['Rating'])
 
         m1, m2 = ModelStump(MeanPredictor, [0, 1]),  ModelStump()
         m3 = ModelStump(lambda : KNeighborsRegressor(30), [0, 1])
+        m4 = TargetAdjuster(groupIndex = 2)
+        m5 = TargetAdjuster(lambda : ModelStump(MeanPredictor, [0, 1]), groupIndex = 2)
+
 
         m1.fit(X[train], y[train])
         m2.fit_df(d_train, ["Artist"], 'Rating')
         m3.fit(X[train], y[train])
+        m4.fit(X[train], y[train])
+        m5.fit(X[train], y[train])
+
 
         print "fold", (i + 1)
         R21 = m1.score(X[test], y[test])
         R22 = m2.score(X[test], y[test])
-        R23 = m2.score(X[test], y[test])
+        R24 = m4.score(X[test], y[test])
+        R25 = m5.score(X[test], y[test])
         print "By Artist", R22
         print "By Song", R21
-        print "By Song With KNN 30", R23
+        print "By user", R24
+        print "By user and Song", R25
                 
 #see http://scikit-learn.org/stable/auto_examples/imputation.html#example-imputation-py
 #for dealing with missing values
@@ -134,12 +142,14 @@ def test3(comp):
         m3.fit(X[train], y[train])
         m4.fit(X[train], y[train])
         m5.fit(X[train], y[train])
+
         print "fold", (i + 1)
         R21 = m1.score(X[test], y[test])
         R22 = m2.score(X[test], y[test])
         R23 = m3.score(X[test], y[test])
         R24 = m4.score(X[test], y[test])
         R25 = m5.score(X[test], y[test])
+
         print "By Song", R21
         print "By Song Decision Tree", R22
         print "By Song With KN 30", R23
@@ -176,6 +186,7 @@ def test4(comp):
         m4 = ModelStump(lambda : Ridge(), [0, 1], verbose = False)
         m5 = Ridge()
 
+
         m1.fit(X[train], y[train])
         m2.fit(X[train], y[train])
         m3.fit(X[train], y[train])
@@ -209,4 +220,4 @@ if __name__ == "__main__":
     songs = list(set(map(tuple, list(np.asarray(train[['Artist', 'Track']])))))
     artists, tracks = zip(*songs)
 
-    test4(5)
+    test3(5)
