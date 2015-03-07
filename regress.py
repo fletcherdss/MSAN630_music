@@ -10,6 +10,14 @@ from sklearn.base import BaseEstimator, RegressorMixin
 #IE crossvalidation 
 
 
+
+# clf = MeanPredictor()
+# clf.fit(data, target)
+# clf.predict(data)
+# print clf
+
+
+
 #A simple regression model which always
 #predicts the mean of the target variable
 class MeanPredictor(BaseEstimator, RegressorMixin):
@@ -68,7 +76,7 @@ class ModelStump(BaseEstimator, RegressorMixin):
         
     #This is assuming the input is a pandas Data Frame
     def fit_df(self, df, splitVars, target):
-        #Clear out the old predictors 
+        #Clear out the old predictors
         self.predictors = {}
 
         self.splitVars = splitVars
@@ -134,7 +142,7 @@ class TargetAdjuster(BaseEstimator, RegressorMixin):
         data[target_name + '_relative'] = data[target_name] - data[target_name + '_mean']
         relevant_vars = lambda c: (c not in [self.groupFeature, target_name,
                                              target_name + 'mean', target_name + '_relative'])
-        X = data[filter(relevant_vars, data.columns)]  
+        X = data[filter(relevant_vars, data.columns)]
         y = data[target_name + '_relative']
         m = self.baseModel()
         m.fit(X, y)
