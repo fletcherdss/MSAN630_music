@@ -17,6 +17,7 @@ from sklearn.base import BaseEstimator, RegressorMixin
 # print clf
 
 
+#old
 
 #A simple regression model which always
 #predicts the mean of the target variable
@@ -142,8 +143,8 @@ class TargetAdjuster(BaseEstimator, RegressorMixin):
         data[target_name + '_relative'] = data[target_name] - data[target_name + '_mean']
         relevant_vars = lambda c: (c not in [self.groupFeature, target_name,
                                              target_name + 'mean', target_name + '_relative'])
-        X = data[filter(relevant_vars, data.columns)]
-        y = data[target_name + '_relative']
+        X = np.array(data[filter(relevant_vars, data.columns)])
+        y = np.array(data[target_name + '_relative'])
         m = self.baseModel()
         m.fit(X, y)
         self.predictor = m

@@ -156,6 +156,9 @@ def test3(comp):
         print "By Song With Ridge", R24
         print "Ridge", R25
 
+
+#realized there is some subtle cheating going on here
+#
 def test4(comp):
     train = pd.read_csv("data/train.csv")
     users = pd.read_csv("data/users.csv")
@@ -213,6 +216,62 @@ def test4(comp):
         print "Ridge", R25
     
 
+def test5(comp):
+    train = pd.read_csv("data/train.csv")
+    users = pd.read_csv("data/users.csv")
+    data = pd.merge(train, users, 'left', left_on = 'User', right_on = 'RESPID')
+    Xs = np.asarray(data[["Artist", "Track", "User"]])
+    Xr =  np.asarray(data[["Q" + str(i) for i in range(1,20)]])
+    y = np.asarray(data["Rating"])
+    imp = Imputer()
+    Xi = imp.fit_transform(Xr)
+    pca = PCA(n_components = comp)
+    Xp = pca.fit_transform(Xi)
+    X = np.concatenate((Xs, Xp), axis = 1)
+    print "data transformed"
+    for i, (train, test) in enumerate(KFold(len(data), 20)):
+        m1 = ModelStump(MeanPredictor, [0, 1])
+        m2 = ModelStump(lambda : DecisionTreeRegressor(max_depth = 5), [0, 1])
+        m3 = ModelStump(lambda : KNeighborsRegressor(30), [0, 1])
+        m4 = ModelStump(lambda : Ridge(), [0, 1], verbose = False)
+        m5 = TargetAdjuster(lambda : KNeighborsRegressor(25), groupIndex = 2)
+        m6 = TargetAdjuster(lambda : ModelStump(lambda: KNeighborsRegressor(25), [0, 1]), groupIndex = 2)
+        m7 = TargetAdjuster(lambda : ModelStump(MeanPredictor, [0, 1]), groupIndex = 2)
+        m8 = TargetAdjuster(MeanPredictor, groupIndex = 2)
+
+#TargetAdjuster(Ridge, groupIndex =  2)
+
+
+
+        m1.fit(X[train], y[train])
+        m2.fit(X[train], y[train])
+        m3.fit(X[train], y[train])
+        m4.fit(X[train], y[train])
+        m5.fit(X[train], y[train])
+        m6.fit(X[train], y[train])
+        m7.fit(X[train], y[train])
+        m8.fit(X[train], y[train])
+
+
+        print "fold", (i + 1)
+        R21 = m1.score(X[test], y[test])
+        R22 = m2.score(X[test], y[test])
+        R23 = m3.score(X[test], y[test])
+        R24 = m4.score(X[test], y[test])
+        R25 = m5.score(X[test], y[test])
+        R26 = m6.score(X[test], y[test])
+        R27 = m7.score(X[test], y[test])
+        R28 = m8.score(X[test], y[test])
+
+        print "By Song", R21
+        print "By Song Decision Tree", R22
+        print "By Song With KN 30", R23
+        print "By Song With Ridge", R24
+        print "Adjusted KNN", R25
+        print "by song KNN adj", R26
+        print "by song Adj", R27
+        print "Adj ", R28
+
 
     
 if __name__ == "__main__":
@@ -220,4 +279,4 @@ if __name__ == "__main__":
     songs = list(set(map(tuple, list(np.asarray(train[['Artist', 'Track']])))))
     artists, tracks = zip(*songs)
 
-    test3(5)
+    test5(5)
