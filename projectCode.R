@@ -13,10 +13,10 @@ library(FactoMineR)
 # Look at PCA in users dataset 
 
 setwd('/Users/Aluminum/Documents/Machine Learning/MSAN630_music')
-train <- read.csv('train.csv')
-users <- fread('users.csv')
-words <- read.csv('words.csv')
-test <- read.csv('test.csv')
+train <- read.csv('data/train.csv')
+users <- fread('data/users.csv')
+words <- read.csv('data/words.csv')
+test <- read.csv('data/test.csv')
 
 # How many users are in the training/test set but not the users.csv file?
 us_train <- filter(train, User %nin% users$RESPID)
@@ -482,7 +482,38 @@ joinedTest <- sqldf("SELECT * FROM test JOIN users USING(User)")
 write.csv(joinedTest, 'data/joined_test.csv')
 
 # FULL LEFT JOIN
-fullJoin <- sqldf("SELECT * FROM users LEFT JOIN train ON train.User = users.RESPID")
-write.csv(fullJoin, 'joined_train_ALL.csv')
+fullJoin <- sqldf("SELECT * FROM train LEFT JOIN users ON train.User = users.RESPID")
+write.csv(fullJoin, 'data/joined_train_ALL.csv')
 
-fullJoinTest <- sqldf("SELECT * FROM users LEFT JOIN test ON test.User = users.RESPID")
+fullJoinTest <- sqldf("SELECT * FROM test LEFT JOIN users ON test.User = users.RESPID")
+write.csv(fullJoinTest, 'data/joined_test_ALL.csv')
+
+# Cleaning up words.csv
+# Of 86 features, only 25 have less than 10% NA's
+words <- read.csv('data/words.csv')
+words <- select(words, c(1:4, 9, 17, 24, 26, 28, 36:39, 41:42, 48, 52, 54:55, 57:58, 60, 62, 64, 68, 70, 86))
+dummy <- acm.disjonctif(words[c('HEARD_OF', 'OWN_ARTIST_MUSIC')])
+nodummy <- select(words, -c(3, 4))
+words <- cbind(nodummy, dummy)
+
+write.csv(words, 'data/words_fewer_cols.csv')
+
+upbeatna <- filter(words, Upbeat %nin% c(0, 1))
+upbeatnona <- filter(words, Upbeat %in% c(0, 1))
+meanUpbeat <- sum(upbeatnona$Upbeat)/nrow(words)
+upbeatna <- mutate(upbeatna, Upbeat = meanUpbeat)
+words <- rbind(upbeatna, upbeatnona)
+
+youthfulna <- filter(words, Youthful %nin% c(0, 1))
+youthfulnona <- filter(words, Youthful %in% c(0, 1))
+meanYouthful <- sum(youthfulnona$Youthful)/nrow(words)
+youthfulna <- mutate(youthfulna, Youthful = meanYouthful)
+words <- rbind(youthfulna, youthfulnona)
+
+catchyna <- filter(words, Catchy %nin% c(0, 1))
+catchynona <- filter(words, Catchy %in% c(0, 1))
+meanCatchy <- sum(catchynona$Catchy)/nrow(words)
+catchyna <- mutate(catchyna, Catchy = meanCatchy)
+words <- rbind(catchyna, catchynona)
+
+write.csv(words, 'data/words_noNA.csv')
