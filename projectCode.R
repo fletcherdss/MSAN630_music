@@ -517,3 +517,13 @@ catchyna <- mutate(catchyna, Catchy = meanCatchy)
 words <- rbind(catchyna, catchynona)
 
 write.csv(words, 'data/words_noNA.csv')
+
+for (i in 5:ncol(words)){
+  nas <- subset(words, words[[i]] == '')
+  nonas <- subset(words, words[[i]] != 'NA')
+  m <- sum(nas[i])/nrow(words)
+  if (m > 0){
+    nas[i] = m
+  }
+  words <- rbind(nas, nonas)
+}
