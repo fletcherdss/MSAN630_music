@@ -542,3 +542,12 @@ names(full_users_words_test)[56] <- 'D2'
 names(full_users_words_test)[57] <- 'D3'
 full_users_words_test <- select(full_users_words_test, -c(55:57, 97))
 write.csv(full_users_words_test, 'data/joined_users_words_test.csv')
+
+# PCAing words features
+words <- fread('data/words_noNA.csv')
+words <- select(words, -1)
+wordss <- data.frame(select(words, c(3:41)))
+pca.words <- prcomp(wordss, center = TRUE, scale. = TRUE)
+plot(pca.words, type = 'lines')
+words.df <- data.frame(pca.words[2])
+write.csv(words.df, 'data/words_pca.csv')
