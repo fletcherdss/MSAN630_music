@@ -10,15 +10,6 @@ from sklearn.base import BaseEstimator, RegressorMixin
 #IE crossvalidation 
 
 
-
-# clf = MeanPredictor()
-# clf.fit(data, target)
-# clf.predict(data)
-# print clf
-
-
-#old
-
 #A simple regression model which always
 #predicts the mean of the target variable
 class MeanPredictor(BaseEstimator, RegressorMixin):
@@ -77,7 +68,7 @@ class ModelStump(BaseEstimator, RegressorMixin):
         
     #This is assuming the input is a pandas Data Frame
     def fit_df(self, df, splitVars, target):
-        #Clear out the old predictors
+        #Clear out the old predictors 
         self.predictors = {}
 
         self.splitVars = splitVars
@@ -142,8 +133,8 @@ class TargetAdjuster(BaseEstimator, RegressorMixin):
                         right_on = self.groupFeature, suffixes = ('', '_mean'))
         data[target_name + '_relative'] = data[target_name] - data[target_name + '_mean']
         relevant_vars = lambda c: (c not in [self.groupFeature, target_name,
-                                             target_name + 'mean', target_name + '_relative'])
-        X = np.array(data[filter(relevant_vars, data.columns)])
+                                             target_name + '_mean', target_name + '_relative'])
+        X = np.array(data[filter(relevant_vars, data.columns)]  )
         y = np.array(data[target_name + '_relative'])
         m = self.baseModel()
         m.fit(X, y)
@@ -165,7 +156,7 @@ class TargetAdjuster(BaseEstimator, RegressorMixin):
     def predict(self, X):
         Xt = X.T
         group = Xt[self.groupIndex]
-        X2 = np.delete(Xt, self.groupIndex, 0).T 
+        X2 = np.delete(Xt, self.groupIndex, 0).T
         y_rel = self.predictor.predict(X2)
         y_means = np.array([self.means[u] if u in self.means else self.global_mean for u in group ])
         return y_rel + y_means
