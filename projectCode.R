@@ -518,12 +518,27 @@ words <- rbind(catchyna, catchynona)
 
 write.csv(words, 'data/words_noNA.csv')
 
-for (i in 5:ncol(words)){
-  nas <- subset(words, words[[i]] == '')
-  nonas <- subset(words, words[[i]] != 'NA')
-  m <- sum(nas[i])/nrow(words)
-  if (m > 0){
-    nas[i] = m
-  }
-  words <- rbind(nas, nonas)
-}
+# Joining train/test and words files on user
+words <- fread('data/words_noNA.csv')
+words <- select(words, -1)
+words <- mutate(words, user_artist = paste(User, Artist, sep = ' '))
+train <- fread('data/joined_train_ALL.csv')
+train <- select(train, -1)
+train <- mutate(train, user_artist = paste(User, Artist, sep = ' '))
+test <- fread('data/joined_test_ALL.csv')
+test <- select(test, -1)
+test <- mutate(test, user_artist = paste(User, Artist, sep = ' '))
+
+full_users_words <- sqldf("SELECT * FROM train LEFT JOIN words ON train.user_artist = words.user_artist")
+names(full_users_words)[56] <- 'D1'
+names(full_users_words)[57] <- 'D2'
+names(full_users_words)[58] <- 'D3'
+full_users_words <- select(full_users_words, -c(56:58, 98))
+write.csv(full_users_words, 'data/joined_users_words_train.csv')
+
+full_users_words_test <- sqldf("SELECT * FROM test LEFT JOIN words ON test.user_artist = words.user_artist")
+names(full_users_words_test)[55] <- 'D1'
+names(full_users_words_test)[56] <- 'D2'
+names(full_users_words_test)[57] <- 'D3'
+full_users_words_test <- select(full_users_words_test, -c(55:57, 97))
+write.csv(full_users_words_test, 'data/joined_users_words_test.csv')
