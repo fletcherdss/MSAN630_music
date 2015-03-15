@@ -292,59 +292,67 @@ def test6(comp):
     y = np.asarray(data["Rating"])
     X = np.asarray(data.icol([1, 2] + range(5, 95)))
     print "data transformed"
-    for i, (train, test) in enumerate(KFold(len(data), 20)):
-        m1 = ModelStump(MeanPredictor, [0, 1])
-        m3 = ModelStump(lambda : KNeighborsRegressor(30), [0, 1])
-        m4 = ModelStump(lambda : Ridge(), [0, 1], verbose = False)
+    s = 0
+    for i, (train, test) in enumerate(KFold(len(data), 20, shuffle = True)):
+        #m1 = Ridge()
+        #m3 = ModelStump(lambda : KNeighborsRegressor(30), [0, 1])
+        #m4 = ModelStump(lambda : Ridge(), [0, 1], verbose = False)
         #m5 = TargetAdjuster(lambda : KNeighborsRegressor(25), groupIndex = 2)
-        m6 = TargetAdjuster(lambda : ModelStump(lambda: KNeighborsRegressor(15), [0, 1]), groupIndex = 2)
-        m7 = TargetAdjuster(lambda : ModelStump(MeanPredictor, [0, 1]), groupIndex = 2)
-        m8 = TargetAdjuster(MeanPredictor, groupIndex = 2)
+        #m6 = TargetAdjuster(lambda : ModelStump(lambda: KNeighborsRegressor(15), [0, 1]), groupIndex = 2)
+        #m7 = TargetAdjuster(lambda : ModelStump(MeanPredictor, [0, 1]), groupIndex = 2)
+        #m8 = TargetAdjuster(MeanPredictor, groupIndex = 2)
         #m9 = TargetAdjuster(lambda : ModelStump(lambda: Ridge(), [0, 1]), groupIndex = 2)
-        m9 = TargetAdjuster(lambda : 
-                 ModelStump(lambda: RandomForestRegressor(min_samples_split = 200) , [0, 1]), groupIndex = 2)
-        m10 = TargetAdjuster(lambda : RandomForestRegressor(min_samples_split = 200), groupIndex = 2)
+        #m9 = TargetAdjuster(lambda : 
+        #         ModelStump(lambda: RandomForestRegressor(min_samples_split = 200) , [0, 1]), groupIndex = 2)
+        #m10 = TargetAdjuster(lambda : RandomForestRegressor(min_samples_split = 200), groupIndex = 2)
         m11 = RandomForestRegressor(min_samples_split = 200) 
+        #m11 = ModelStump(lambda: RandomForestRegressor(min_samples_split = 200), [0,1]) 
         #m9 = ModelStump(lambda: TargetAdjuster(Ridge, groupIndex = 2), [0, 1])
 
 #TargetAdjuster(Ridge, groupIndex =  2)
 
-        m1.fit(X[train], y[train])
-        m3.fit(X[train], y[train])
-        m4.fit(X[train], y[train])
-        m5.fit(X[train], y[train])
-        m6.fit(X[train], y[train])
-        m7.fit(X[train], y[train])
-        m8.fit(X[train], y[train])
-        m9.fit(X[train], y[train])
-        m10.fit(X[train], y[train])
+        #m1.fit(X[train], y[train])
+        #m3.fit(X[train], y[train])
+        #m4.fit(X[train], y[train])
+        #m5.fit(X[train], y[train])
+        #m6.fit(X[train], y[train])
+        #m7.fit(X[train], y[train])
+        #m8.fit(X[train], y[train])
+        #m9.fit(X[train], y[train])
+        #m10.fit(X[train], y[train])
         m11.fit(X[train], y[train])
 
 
         print "fold", (i + 1)
-        R21 = m1.score(X[test], y[test])
-        R23 = m3.score(X[test], y[test])
-        R24 = m4.score(X[test], y[test])
-        R25 = m5.score(X[test], y[test])
-        R26 = m6.score(X[test], y[test])
-        R27 = m7.score(X[test], y[test])
-        R28 = m8.score(X[test], y[test])
-        R29 = m9.score(X[test], y[test])
-        R30 = m10.score(X[test], y[test])
-        R31 = m11.score(X[test], y[test])
+        #R21 = m1.score(X[test], y[test])
+        #R23 = m3.score(X[test], y[test])
+        #R24 = m4.score(X[test], y[test])
+        #R25 = m5.score(X[test], y[test])
+        #R26 = m6.score(X[test], y[test])
+        #R27 = m7.score(X[test], y[test])
+        #R28 = m8.score(X[test], y[test])
+        #R29 = m9.score(X[test], y[test])
+        #R30 = m10.score(X[test], y[test])
+        #R31 = m11.score(X[test], y[test])
+        s += m11.score(X[test], y[test])
 
 
-        print "By Song", R21
-        print "By Song Decision Tree", R22
-        print "By Song With KN 30", R23
-        print "By Song With Ridge", R24
-        print "Adjusted KNN", R25
-        print "by song KNN adj", R26
-        print "by song Adj", R27
-        print "Adj ", R28
-        print "by song Adj Random Forest ", R29
-        print "Adj Random Forest ", R30
-        print "Random Forest ", R31
+
+#        print "Ridge", R21
+        #print "By Song Decision Tree", R22
+        #print "By Song With KN 30", R23
+        #print "By Song With Ridge", R24
+        #print "Adjusted KNN", R25
+        #print "by song KNN adj", R26
+        #print "by song Adj", R27
+        #print "Adj ", R28
+        #print "by song Adj Random Forest ", R29
+        #print "Adj Random Forest ", R30
+        #print "Random Forest ", R31
+    print s / 20.0
+#random forest leaf = 200
+#0.497711795599
+
 
 
     

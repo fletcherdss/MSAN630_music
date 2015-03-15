@@ -140,7 +140,7 @@ class TargetAdjuster(BaseEstimator, RegressorMixin):
         m.fit(X, y)
         self.predictor = m
         self.means = dict((a,b) for _, a, b in grag.itertuples())
-        self.global_mean = np.mean(y)
+        self.global_mean = np.mean(data[target_name])
         return self
 
     def fit(self, X, y):
