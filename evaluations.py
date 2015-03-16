@@ -298,15 +298,15 @@ def test6(comp):
         #m3 = ModelStump(lambda : KNeighborsRegressor(30), [0, 1])
         #m4 = ModelStump(lambda : Ridge(), [0, 1], verbose = False)
         #m5 = TargetAdjuster(lambda : KNeighborsRegressor(25), groupIndex = 2)
-        #m6 = TargetAdjuster(lambda : ModelStump(lambda: KNeighborsRegressor(15), [0, 1]), groupIndex = 2)
+        #m6 = TargetAdjuster(lambda : ModelStump(lambda: KNeighborsRegressor(30), [0, 1]), groupIndex = 2)
         #m7 = TargetAdjuster(lambda : ModelStump(MeanPredictor, [0, 1]), groupIndex = 2)
         #m8 = TargetAdjuster(MeanPredictor, groupIndex = 2)
         #m9 = TargetAdjuster(lambda : ModelStump(lambda: Ridge(), [0, 1]), groupIndex = 2)
         #m9 = TargetAdjuster(lambda : 
         #         ModelStump(lambda: RandomForestRegressor(min_samples_split = 200) , [0, 1]), groupIndex = 2)
         #m10 = TargetAdjuster(lambda : RandomForestRegressor(min_samples_split = 200), groupIndex = 2)
-        m11 = RandomForestRegressor(min_samples_split = 200) 
-        #m11 = ModelStump(lambda: RandomForestRegressor(min_samples_split = 200), [0,1]) 
+        #m11 = RandomForestRegressor(min_samples_split = 20, n_estimators = 10, n_jobs = -1) 
+        m11 = ModelStump(lambda: RandomForestRegressor(min_samples_split = 20), [0,1]) 
         #m9 = ModelStump(lambda: TargetAdjuster(Ridge, groupIndex = 2), [0, 1])
 
 #TargetAdjuster(Ridge, groupIndex =  2)
@@ -325,7 +325,7 @@ def test6(comp):
 
         print "fold", (i + 1)
         #R21 = m1.score(X[test], y[test])
-        #R23 = m3.score(X[test], y[test])
+        #s += m3.score(X[test], y[test])
         #R24 = m4.score(X[test], y[test])
         #R25 = m5.score(X[test], y[test])
         #R26 = m6.score(X[test], y[test])
@@ -334,7 +334,7 @@ def test6(comp):
         #R29 = m9.score(X[test], y[test])
         #R30 = m10.score(X[test], y[test])
         #R31 = m11.score(X[test], y[test])
-        s += m11.score(X[test], y[test])
+        print m11.score(X[test], y[test])
 
 
 
